@@ -1,14 +1,9 @@
-from sqlmodel import SQLModel,Field,create_engine,Session
-from typing import Literal
+from sqlmodel import SQLModel,Field
 from pydantic import model_validator
 from utils import calculate_bmi, calculate_verdict
 
 
-
-
-
 class PatientsBase(SQLModel):
-  
   p_id: str
   name: str = Field(index= True)
   city: str
@@ -18,7 +13,6 @@ class PatientsBase(SQLModel):
   weight: float
   bmi: float| None = Field(default= None)
   verdict: str| None = Field(default= None)
-
 
   @model_validator(mode = "after")
   def compute_field(self):
@@ -49,5 +43,19 @@ class PatientUpdate(SQLModel):
 
 
 
+class BaseUser(SQLModel):
+  username: str
+  email: str
+  
+
+class User(BaseUser, table = True):
+  id: int | None = Field(default = None, primary_key = True)
+  hashed_password: str
+
+class UserView(BaseUser):
+  pass
+
+class UserCreate(BaseUser):
+  password: str
 
 

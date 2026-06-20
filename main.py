@@ -1,11 +1,14 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI,HTTPException, Depends
 from database import engine, create_db_and_table
 from model import Patients, PatientView, PatientCreate, PatientUpdate
-from utils import calculate_bmi, calculate_verdict,json_into_database
+from utils import calculate_bmi, calculate_verdict
 from sqlmodel import Session, select
 from typing import List
+import authentication
+from signup import router, token_extractor
 
 app = FastAPI()
+app.include_router(router)
 
 @app.get("/")
 def home():
@@ -78,12 +81,17 @@ def delete_patient(p_id: str):
     session.delete(existing_patient)
     session.commit()
     return{"Deleted"}
+  
+@app.get("/user")
+def get_user(token: str = Depends(token_extractor)):
+  return "hello"
+
 
 
 def main():
   pass
   #create_db_and_table()
-  #json_into_database()   
+    
     
 if __name__ == "__main__":
   main()

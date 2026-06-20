@@ -1,0 +1,8 @@
+fastapi
+sqlmodel
+python-dotenv
+jwt
+"pwdlib[argon2]"
+python-multipart
+pydantic
+
