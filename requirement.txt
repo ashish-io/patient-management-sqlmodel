@@ -1,5 +1,6 @@
 fastapi
 sqlmodel
+uvicorn
 python-dotenv
 jwt
 "pwdlib[argon2]"
