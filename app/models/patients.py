@@ -1,7 +1,6 @@
-from sqlmodel import SQLModel,Field
+from sqlmodel import SQLModel, Field
 from pydantic import model_validator
-from utils import calculate_bmi, calculate_verdict
-
+from ..utilities.service import calculate_bmi, calculate_verdict
 
 class PatientsBase(SQLModel):
   p_id: str
@@ -40,22 +39,3 @@ class PatientUpdate(SQLModel):
   age: int | None = None
   height: float | None = None
   weight: float | None = None
-
-
-
-class BaseUser(SQLModel):
-  username: str
-  email: str
-  
-
-class User(BaseUser, table = True):
-  id: int | None = Field(default = None, primary_key = True)
-  hashed_password: str
-
-class UserView(BaseUser):
-  pass
-
-class UserCreate(BaseUser):
-  password: str
-
-

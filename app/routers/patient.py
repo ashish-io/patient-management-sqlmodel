@@ -1,28 +1,21 @@
-from fastapi import FastAPI,HTTPException, Depends
-from database import engine, create_db_and_table
-from model import Patients, PatientView, PatientCreate, PatientUpdate
-from utils import calculate_bmi, calculate_verdict
-from sqlmodel import Session, select
+from fastapi import APIRouter, HTTPException
 from typing import List
-import authentication
-from signup import router, token_extractor
+from sqlmodel import Session, select
+from ..models.patients import PatientCreate, Patients, PatientUpdate, PatientView
+from ..utilities.service import calculate_bmi, calculate_verdict
+from ..database import engine
 
-app = FastAPI()
-app.include_router(router)
-
-@app.get("/")
-def home():
-  return "An api to manage patients"
+router = APIRouter()
 
 
-@app.get("/patients",response_model=List[PatientView])   #change this , apply query parameters
+@router.get("/patients",response_model=List[PatientView])   #change this , apply query parameters
 def view_patients():
   with Session(engine) as session:
     patient = session.exec(select(Patients)).all()
     return patient
 
 
-@app.get("/patients/{p_id}", response_model=PatientView)
+@router.get("/patients/{p_id}", response_model=PatientView)
 def get_one_patient(p_id: str):
   with Session(engine) as session:
     statement = select(Patients).where(Patients.p_id == p_id )
@@ -33,7 +26,7 @@ def get_one_patient(p_id: str):
 
     return patient
 
-@app.post("/create")
+@router.post("/create")
 def post_patient(patients: PatientCreate):
   with Session(engine) as session:
 
@@ -44,7 +37,7 @@ def post_patient(patients: PatientCreate):
     session.refresh(patient)
     return patient
 
-@app.patch("/edit/{p_id}", response_model= PatientView)
+@router.patch("/edit/{p_id}", response_model= PatientView)
 def edit_patient(p_id: str, patient: PatientUpdate):
   with Session(engine) as session:
     existing_patient = session.exec(select(Patients).where(Patients.p_id == p_id)).first()
@@ -68,7 +61,7 @@ def edit_patient(p_id: str, patient: PatientUpdate):
 
 
 
-@app.delete("/delete/{p_id}")
+@router.delete("/delete/{p_id}")
 def delete_patient(p_id: str):
   with Session(engine) as session:
     existing_patient = session.exec(select(Patients).where(Patients.p_id == p_id)).first()
@@ -81,20 +74,3 @@ def delete_patient(p_id: str):
     session.delete(existing_patient)
     session.commit()
     return{"Deleted"}
-  
-@app.get("/user")
-def get_user(token: str = Depends(token_extractor)):
-  return "hello"
-
-
-
-def main():
-  pass
-  #create_db_and_table()
-    
-    
-if __name__ == "__main__":
-  main()
-
-
-

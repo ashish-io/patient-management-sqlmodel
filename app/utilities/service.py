@@ -1,4 +1,3 @@
-
 def calculate_bmi(height, weight) -> float:
   bmi = round(weight / (height ** 2), 2)
   return bmi
@@ -13,7 +12,3 @@ def calculate_verdict(bmi) -> str:
   else:
       verdict = "Obese"
   return verdict
-
-
-
-

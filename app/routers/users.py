@@ -1,15 +1,11 @@
-
-from model import UserCreate, User
+from fastapi import APIRouter, HTTPException, Depends
+from ..models.users import UserCreate, UserView, User
 from sqlmodel import Session, select
-from database import engine
-from fastapi import HTTPException, APIRouter, Depends
-from authentication import create_hashed_password, verify_password, create_token
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-
-token_extractor = OAuth2PasswordBearer(tokenUrl = "login")
+from ..database import engine
+from fastapi.security import OAuth2PasswordRequestForm
+from ..utilities.authentication import create_hashed_password, create_token, verify_password, verify_token
 
 router = APIRouter()
-
 
 
 @router.post("/register")
@@ -47,18 +43,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     token = create_token(form_data.username)
 
-  return {"my_token": token, "token_type": "bearer"}
+  return {"access_token": token, "token_type": "bearer"}
 
-  
-
-      
-
-
-
-  pass
-
-
-
-
-
-
+@router.get("/user", dependencies = [Depends(verify_token)])
+def get_user():
+  return "hello"
