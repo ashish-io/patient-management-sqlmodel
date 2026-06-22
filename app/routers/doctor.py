@@ -34,13 +34,13 @@ def view_doctors():
     doctors = session.exec(select(Doctor)).all()
     return doctors
 
-@router.get("/doctors{name}", response_model = DoctorView)
+@router.get("/doctors/{name}", response_model = DoctorView)
 def view_one_doctors(name: str):
   with Session(engine) as session:
     doctor = session.exec(select(Doctor).where(Doctor.name == name)).first()
     return doctor
   
-@router.patch("/edit_doctor{name}", response_model = DoctorView)
+@router.patch("/edit_doctor/{name}", response_model = DoctorView)
 def edit_doctor_detail(name: str, doctor: DoctorUpdate):
   with Session(engine) as session:
     existing_doctor = session.exec(select(Doctor).where(Doctor.name == name)).first()
@@ -57,7 +57,7 @@ def edit_doctor_detail(name: str, doctor: DoctorUpdate):
 
     return updated_data
 
-@router.delete("/delete_doctors{name}")
+@router.delete("/delete_doctors/{name}")
 def delete_doctors(name: str):
   with Session(engine) as session:
     existing_doctor = session.exec(select(Doctor).where(Doctor.name == name)).first()

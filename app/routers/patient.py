@@ -60,13 +60,11 @@ def edit_patient(p_id: str, patient: PatientUpdate):
     return updated_patient
 
 
-
 @router.delete("/delete/{p_id}")
 def delete_patient(p_id: str):
   with Session(engine) as session:
     existing_patient = session.exec(select(Patients).where(Patients.p_id == p_id)).first()
 
-   
 
     if not existing_patient:
       raise HTTPException(status_code=404, detail="Patient do not exist")
