@@ -24,37 +24,38 @@ def create_appointment(appointment: AppointmentCreate):
       raise HTTPException(status_code = 404, detail="Patient not found")
     
 
-    new_appointment = Appointment.model_validate(AppointmentCreate)
+    new_appointment = Appointment.model_validate(appointment)
     session.add(new_appointment)
-    session.commit
+    session.commit()
     session.refresh(new_appointment)
 
     return new_appointment
   
-@router.get("/see_patient_appointment/{p_id}")
-def see_patient_appointment(p_id: str):
+@router.get("/see_patient_appointment/{id}")
+def see_patient_appointment(id: int):
   with Session(engine) as session:
-    patient_appointment = session.exec(select(Patients.p_id, Appointment).join(Appointment, Patients.id == Appointment.patient_id)).all()
 
-    session.add(patient_appointment)
-    session.commit()
-    session.refresh(patient_appointment)
+        
+    patient = session.get(Patients, id)
+    if not patient:
+      raise HTTPException(status_code=404, detail="Patient not found")
 
-    return patient_appointment
+        
+    appointments = session.exec(
+    select(Appointment)
+    .where(Appointment.patient_id == id)
+    ).all()
+
+  return appointments
   
 @router.get("/get_doctor_appointment/{name}")
 def see_doctor_appointment(name: str):
   with Session(engine) as session:
      
 
-    d_id = session.exec(select(Doctor.id).where(Doctor.name == name))
-    doctor_appointment = session.exec(select(Doctor.name, Appointment).join(Appointment, d_id == Appointment.doctors_id)).all()
-
+    d_id = session.exec(select(Doctor.id).where(Doctor.name == name)).first()
     
-
-    session.add(doctor_appointment)
-    session.commit()
-    session.refresh(doctor_appointment)
+    doctor_appointment = session.exec(select(Appointment).where(d_id == Appointment.doctors_id)).all()
 
     return doctor_appointment
 

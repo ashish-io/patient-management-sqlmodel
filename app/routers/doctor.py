@@ -11,7 +11,7 @@ def add_new_doctor(doctor: DoctorCreate):
   with Session(engine) as session:
    
   
-   existing_doctor = session.exec(select(Doctor)).where(Doctor.name == doctor.name).where(Doctor.contact_no == doctor.contact_no).first()
+   existing_doctor = session.exec(select(Doctor).where(Doctor.name == doctor.name)).first()
 
    if existing_doctor:
      raise HTTPException(status_code = 201, detail = "Alreayd exist")

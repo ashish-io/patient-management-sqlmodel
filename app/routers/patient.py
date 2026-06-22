@@ -15,10 +15,10 @@ def view_patients():
     return patient
 
 
-@router.get("/patients/{p_id}", response_model=PatientView)
-def get_one_patient(p_id: str):
+@router.get("/patients/{id}", response_model=PatientView)
+def get_one_patient(id: int):
   with Session(engine) as session:
-    statement = select(Patients).where(Patients.p_id == p_id )
+    statement = select(Patients).where(Patients.id == id )
     patient = session.exec(statement).first()
 
     if not patient:
@@ -29,18 +29,23 @@ def get_one_patient(p_id: str):
 @router.post("/create")
 def post_patient(patients: PatientCreate):
   with Session(engine) as session:
+      data = patients.model_dump()
 
-    patient = Patients.model_validate(patients) #why this ? learn
+      data["bmi"] = calculate_bmi(data["height"], data["weight"])
+      data["verdict"] = calculate_verdict(data["bmi"])
 
-    session.add(patient)
-    session.commit()
-    session.refresh(patient)
-    return patient
+      patient = Patients.model_validate(data)
 
-@router.patch("/edit/{p_id}", response_model= PatientView)
-def edit_patient(p_id: str, patient: PatientUpdate):
+      session.add(patient)
+      session.commit()
+      session.refresh(patient)
+      
+      return patient
+
+@router.patch("/edit/{id}", response_model= PatientView)
+def edit_patient(id: int, patient: PatientUpdate):
   with Session(engine) as session:
-    existing_patient = session.exec(select(Patients).where(Patients.p_id == p_id)).first()
+    existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
     if not existing_patient:
       raise HTTPException(status_code=404, detail="Patient do not exist")
@@ -60,10 +65,10 @@ def edit_patient(p_id: str, patient: PatientUpdate):
     return updated_patient
 
 
-@router.delete("/delete/{p_id}")
-def delete_patient(p_id: str):
+@router.delete("/delete/{id}")
+def delete_patient(id: str):
   with Session(engine) as session:
-    existing_patient = session.exec(select(Patients).where(Patients.p_id == p_id)).first()
+    existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
 
     if not existing_patient:

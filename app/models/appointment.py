@@ -16,16 +16,17 @@ class AppointmentBase(SQLModel):
   
 
 class Appointment(AppointmentBase, table = True):
-   appointment_id: int | None = Field(default = None, primary_key = True)
-   booking_date: Annotated[datetime, Field(default_factory = datetime.utcnow)]
+  appointment_id: int | None = Field(default = None, primary_key = True)
+  booking_date: Annotated[datetime, Field(default_factory = datetime.utcnow)]
 
 class AppointmentCreate(AppointmentBase):
+
   pass 
 
 class AppointmentView(AppointmentBase):
   pass
 
-class AppointmentUpdate(AppointmentBase):
+class AppointmentUpdate(SQLModel):
   status: Status | None = None
   
 
