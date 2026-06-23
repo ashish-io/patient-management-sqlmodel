@@ -5,7 +5,7 @@ from ..database import engine
 from fastapi.security import OAuth2PasswordRequestForm
 from ..utilities.authentication import create_hashed_password, create_token, verify_password, verify_token
 
-router = APIRouter()
+router = APIRouter(tags = ["Users"])
 
 
 @router.post("/register")

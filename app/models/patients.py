@@ -69,6 +69,8 @@ class PatientView(SQLModel):
   gender: Gender 
   height: float
   weight: float
+  bmi: float
+  verdict: str
   
  
 class PatientUpdate(SQLModel):
@@ -80,12 +82,12 @@ class PatientUpdate(SQLModel):
   weight: float | None = None
 
   @computed_field
-  def calculate_bmi(self) -> float| None:
+  def bmi(self) -> float| None:
     bmi = calculate_bmi(self.height, self.weight)
     return bmi
   
   @computed_field
-  def calculate_verdict(self) -> str:
+  def verdict(self) -> str:
     verdict = calculate_verdict(self.bmi)
     return verdict
     

@@ -5,7 +5,7 @@ from ..models.patients import PatientCreate, Patients, PatientUpdate, PatientVie
 from ..utilities.services import calculate_bmi, calculate_verdict
 from ..database import engine
 
-router = APIRouter()
+router = APIRouter(tags=["Patient"])
 
 
 @router.get("/patients",response_model=List[PatientView])   #change this , apply query parameters

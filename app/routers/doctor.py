@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from ..database import engine
 from typing import List
 
-router = APIRouter()
+router = APIRouter(tags = ["Doctor"])
 
 @router.post("/add_doctor", response_model = DoctorView)
 def add_new_doctor(doctor: DoctorCreate):

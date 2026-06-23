@@ -6,8 +6,7 @@ from ..models.patients import Patients
 from ..models.doctors import Doctor
 
 
-router = APIRouter()
-
+router = APIRouter(tags = ["Appointment"])
 
 @router.post("/create_appointment", response_model = AppointmentView)
 def create_appointment(appointment: AppointmentCreate):
