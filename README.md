@@ -1,13 +1,15 @@
 # Patient Management API
 
-A REST API for managing patients, doctors, and appointments. Built with FastAPI and SQLModel.
+A RESTful API for managing patients, doctors, and appointments, built with FastAPI and SQLModel.
 
 ## Features
 
-- Patient CRUD with automatic BMI calculation
+- Patient CRUD operations
+- Automatic BMI calculation for patients
 - Doctor management
-- Appointment booking
-- User registration and login with JWT
+- Appointment booking system
+- User registration and authentication with JWT
+- SQLite database integration
 
 ## Tech Stack
 
@@ -15,48 +17,89 @@ A REST API for managing patients, doctors, and appointments. Built with FastAPI 
 - SQLModel
 - SQLite
 - JWT Authentication
+- Python
 
-## Run Locally
+## Getting Started
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/ashish-io/patient-management-sqlmodel.git
 cd patient-management-sqlmodel
+```
+
+### Create and Activate a Virtual Environment
+
+```bash
 python -m venv venv
+```
 
-# Windows:
+**Windows**
+
+```bash
 venv\Scripts\activate
+```
 
-# Mac/Linux:
+**macOS/Linux**
+
+```bash
 source venv/bin/activate
+```
 
-pip install -r requirement.txt
+### Install Dependencies
 
-# Create .env file with:
-# SECRET_KEY=your-secret-key
+```bash
+pip install -r requirements.txt
+```
 
+### Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+SECRET_KEY=your-secret-key
+```
+
+### Run the Application
+
+```bash
 uvicorn app.main:app --reload
+```
 
-## API Endpints
+The API will be available at:
 
-| Method | Endpoint              | Description      |
-| ------ | --------------------- | ---------------- |
-| POST   | `/register`           | Register user    |
-| POST   | `/login`              | Login            |
-| GET    | `/patients`           | List patients    |
-| POST   | `/create`             | Create patient   |
-| GET    | `/doctors`            | List doctors     |
-| POST   | `/add_doctor`         | Add doctor       |
-| POST   | `/create_appointment` | Book appointment |
+```text
+http://127.0.0.1:8000
+```
 
+## API Endpoints
 
-##API Docs
-After running, open: http://127.0.0.1:8000/docs
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | `/register` | Register a new user |
+| POST | `/login` | Authenticate a user |
+| GET | `/patients` | Retrieve all patients |
+| POST | `/create` | Create a new patient |
+| GET | `/doctors` | Retrieve all doctors |
+| POST | `/add_doctor` | Add a new doctor |
+| POST | `/create_appointment` | Book an appointment |
 
+## API Documentation
 
-##Future Improvements
-#Add tests
-#Switch to PostgreSQL
-#Add Docker support
+Once the server is running, access the interactive Swagger UI at:
 
-##Author
-GitHub: @ashish-io
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Future Improvements
+
+- Add automated tests
+- Migrate from SQLite to PostgreSQL
+- Add Docker support
+- Implement role-based access control (RBAC)
+- Add pagination and filtering for API endpoints
+
+## Author
+
+GitHub: **@ashish-io**
