@@ -1,20 +1,27 @@
 from sqlmodel import SQLModel, Field
 from typing import Annotated
 
-class DoctorBase(SQLModel):
+
+class Doctor(SQLModel, table = True):
+  id: Annotated[int, Field(default = None, primary_key = True)]
   name: str
   contact_no: str
   specialization: str
-  experience: int 
+  experience: int
 
-class Doctor(DoctorBase, table = True):
-  id: Annotated[int, Field(default = None, primary_key = True)]
 
-class DoctorCreate(DoctorBase):
-  pass
+class DoctorCreate(SQLModel):
+  name: str
+  contact_no: str
+  specialization: str
+  experience: int
 
-class DoctorView(DoctorBase):
-  id: int
+class DoctorView(SQLModel):
+  
+  name: str
+  contact_no: str
+  specialization: str
+  experience: int
 
 class DoctorUpdate(SQLModel):
   contact_no: str | None = None

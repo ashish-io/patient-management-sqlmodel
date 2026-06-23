@@ -23,6 +23,11 @@ def create_appointment(appointment: AppointmentCreate):
     if not existing_patient:
       raise HTTPException(status_code = 404, detail="Patient not found")
     
+    existing_appointment = session.exec(select(Appointment).where(Appointment.appointment_date == appointment.appointment_date).where(Appointment.appointment_time == appointment.appointment_time)).first()
+
+    if existing_appointment:
+      raise HTTPException(status_code = 401, detail="Appointment time conflict.Choose another date or time")
+    
 
     new_appointment = Appointment.model_validate(appointment)
     session.add(new_appointment)

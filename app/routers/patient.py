@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 from sqlmodel import Session, select
 from ..models.patients import PatientCreate, Patients, PatientUpdate, PatientView
-from ..utilities.service import calculate_bmi, calculate_verdict
+from ..utilities.services import calculate_bmi, calculate_verdict
 from ..database import engine
 
 router = APIRouter()
@@ -31,9 +31,6 @@ def post_patient(patients: PatientCreate):
   with Session(engine) as session:
       data = patients.model_dump()
 
-      data["bmi"] = calculate_bmi(data["height"], data["weight"])
-      data["verdict"] = calculate_verdict(data["bmi"])
-
       patient = Patients.model_validate(data)
 
       session.add(patient)
@@ -54,11 +51,10 @@ def edit_patient(id: int, patient: PatientUpdate):
         
     updated_patient = existing_patient.sqlmodel_update(patient_data)
 
-    #update bmi, and verdict manually
     updated_patient.bmi = calculate_bmi(updated_patient.height, updated_patient.weight)
     updated_patient.verdict = calculate_verdict(updated_patient.bmi)
-    session.add(updated_patient)
 
+    session.add(updated_patient)
     session.commit()
 
     session.refresh(updated_patient)

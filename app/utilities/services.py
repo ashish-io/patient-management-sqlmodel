@@ -1,9 +1,9 @@
+def calculate_bmi(hieght, weight):
+  return round(weight/(hieght**2),2)
 
-def calculate_bmi(height, weight) -> float:
-  bmi = round(weight / (height ** 2), 2)
-  return bmi
 
-def calculate_verdict(bmi) -> str:
+
+def calculate_verdict(bmi):
   if bmi < 18.5:
       verdict = "Underweight"
   elif bmi < 25:
