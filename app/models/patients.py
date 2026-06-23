@@ -11,7 +11,8 @@ class Gender(str, Enum):
 class Patients(SQLModel, table = True):
   id: int | None = Field(default= None, primary_key= True )
   name: str
-  age: str
+  city: str
+  age: int
   gender: Gender
   height: float
   weight: float

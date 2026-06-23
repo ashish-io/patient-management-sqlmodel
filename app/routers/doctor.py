@@ -65,8 +65,8 @@ def delete_doctors(name: str):
     if not existing_doctor:
       raise HTTPException(status_code = 201, detail = "Do not exist")
 
-  session.delete(existing_doctor)
-  session.commit()
+    session.delete(existing_doctor)
+    session.commit()
 
   return {"message": "Deleted"}  
     

@@ -62,7 +62,7 @@ def edit_patient(id: int, patient: PatientUpdate):
 
 
 @router.delete("/delete/{id}")
-def delete_patient(id: str):
+def delete_patient(id: int):
   with Session(engine) as session:
     existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
