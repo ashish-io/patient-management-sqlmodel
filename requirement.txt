@@ -2,7 +2,7 @@ fastapi
 sqlmodel
 uvicorn
 python-dotenv
-jwt
+PyJWT
 "pwdlib[argon2]"
 python-multipart
 pydantic
