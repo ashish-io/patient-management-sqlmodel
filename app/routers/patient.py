@@ -1,23 +1,37 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import List
 from sqlmodel import Session, select
 from ..models.patients import PatientCreate, Patients, PatientUpdate, PatientView
 from ..utilities.services import calculate_bmi, calculate_verdict
-from ..database import engine
+from ..database import engine, get_session
 
 router = APIRouter(tags=["Patient"])
 
 
-@router.get("/patients",response_model=List[PatientView])   #change this , apply query parameters
-def view_patients():
-  with Session(engine) as session:
-    patient = session.exec(select(Patients)).all()
+@router.get("/patients",response_model=List[PatientView])   
+def view_patients(
+  name: str | None = Query(default = None, description = "Search by name"),
+  city: str | None = Query(default = None, description = "Filter by city"),
+  skip: int  = Query(default = 0, ge = 0, description = "Skip N patients"),
+  limit: int = Query(default = 10, ge = 1, le = 50, description = "Maximum patients to return"),
+  
+  session: Session = Depends(get_session)
+):
+  
+
+    statement = select(Patients)
+    if name:
+      statement = statement.where(Patients.name == name)
+    if city:
+      statement = statement.where(Patients.city == city)
+    statement = statement.offset(skip).limit(limit)
+    patient = session.exec(statement).all()
     return patient
 
 
 @router.get("/patients/{id}", response_model=PatientView)
-def get_one_patient(id: int):
-  with Session(engine) as session:
+def get_one_patient(id: int, session: Session = Depends(get_session)):
+  
     statement = select(Patients).where(Patients.id == id )
     patient = session.exec(statement).first()
 
@@ -26,9 +40,9 @@ def get_one_patient(id: int):
 
     return patient
 
-@router.post("/create")
-def post_patient(patients: PatientCreate):
-  with Session(engine) as session:
+@router.post("/create", status_code=201)
+def post_patient(patients: PatientCreate, session: Session = Depends(get_session)):
+  
       data = patients.model_dump()
 
       patient = Patients.model_validate(data)
@@ -40,8 +54,8 @@ def post_patient(patients: PatientCreate):
       return patient
 
 @router.patch("/edit/{id}", response_model= PatientView)
-def edit_patient(id: int, patient: PatientUpdate):
-  with Session(engine) as session:
+def edit_patient(id: int, patient: PatientUpdate, session: Session = Depends(get_session)):
+  
     existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
     if not existing_patient:
@@ -62,8 +76,8 @@ def edit_patient(id: int, patient: PatientUpdate):
 
 
 @router.delete("/delete/{id}")
-def delete_patient(id: int):
-  with Session(engine) as session:
+def delete_patient(id: int, session: Session = Depends(get_session)):
+  
     existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
 

@@ -1,20 +1,20 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from ..models.doctors import Doctor, DoctorView, DoctorCreate, DoctorUpdate
 from sqlmodel import Session, select
-from ..database import engine
+from ..database import get_session, engine
 from typing import List
 
 router = APIRouter(tags = ["Doctor"])
 
-@router.post("/add_doctor", response_model = DoctorView)
-def add_new_doctor(doctor: DoctorCreate):
-  with Session(engine) as session:
+@router.post("/add_doctor", response_model = DoctorView, status_code=201)
+def add_new_doctor(doctor: DoctorCreate,session: Session = Depends(get_session)):
+  
    
   
    existing_doctor = session.exec(select(Doctor).where(Doctor.name == doctor.name)).first()
 
    if existing_doctor:
-     raise HTTPException(status_code = 201, detail = "Alreayd exist")
+     raise HTTPException(status_code = 400, detail = "Already exist")
    
    new_doctor = Doctor(
      name = doctor.name,
@@ -29,14 +29,14 @@ def add_new_doctor(doctor: DoctorCreate):
    return new_doctor
 
 @router.get("/doctors", response_model = List[DoctorView])
-def view_doctors():
-  with Session(engine) as session:
+def view_doctors(session: Session = Depends(get_session)):
+  
     doctors = session.exec(select(Doctor)).all()
     return doctors
 
 @router.get("/doctors/{name}", response_model = DoctorView)
-def view_one_doctors(name: str):
-  with Session(engine) as session:
+def view_one_doctors(name: str, session: Session = Depends(get_session)):
+  
     doctor = session.exec(select(Doctor).where(Doctor.name == name)).first()
     return doctor
   

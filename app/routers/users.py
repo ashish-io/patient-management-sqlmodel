@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from ..models.users import UserCreate, UserView, User
 from sqlmodel import Session, select
-from ..database import engine
+from ..database import engine, get_session
 from fastapi.security import OAuth2PasswordRequestForm
 from ..utilities.authentication import create_hashed_password, create_token, verify_password, verify_token
 
@@ -9,13 +9,13 @@ router = APIRouter(tags = ["Users"])
 
 
 @router.post("/register")
-def register(user: UserCreate):
-  with Session(engine) as session:
+def register(user: UserCreate, session: Session = Depends(get_session)):
+
     #check if user already exist
     existing_user = session.exec(select(User).where(User.username == user.username).where(User.email == user.email)).first()
 
     if  existing_user:
-      raise HTTPException(status_code= 201, detail = "User alreayd exist")
+      raise HTTPException(status_code= 401, detail = "User alreayd exist")
     
     new_user = User(
       username = user.username,
@@ -31,8 +31,8 @@ def register(user: UserCreate):
     return new_user
   
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-  with Session(engine) as session:
+def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+  
     user = session.exec(select(User).where(form_data.username == User.username)).first() 
 
     if not user:
@@ -43,8 +43,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     token = create_token(form_data.username)
 
-  return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer"}
 
+
+#just a example protected endpoint
 @router.get("/user", dependencies = [Depends(verify_token)])
 def get_user():
   return "hello"
