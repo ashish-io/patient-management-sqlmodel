@@ -35,11 +35,27 @@ def test_login_with_wrongpassword(client, test_session):
 def test_login_user_donot_exist(client, test_session):
 
   respose = client.post("/login", data = {"username": "anythin", "password": "pass"})
-  respose.status_code == 404
-  respose.json()["detail"] == "User Not Found"
+  assert respose.status_code == 404
+  assert respose.json()["detail"] == "User Not Found"
 
 
+#test for protected route
 
+def test_protected_user(authenticated_client):
+
+  response = authenticated_client.get("/user")
+  response.status_code == 200
+  response.json() == "hello"
+
+def test_protected_user_with_no_token(client):
+
+  response = client.get("/user")
+  assert response.status_code == 401
+
+def test_protected_user_with_invalid_token(client):
+
+  response = client.get("/user", headers = {"Authorization": "Bearer randomtoken"})
+  assert response.status_code == 401
 
 
 

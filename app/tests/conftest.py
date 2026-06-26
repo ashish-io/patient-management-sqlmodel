@@ -4,6 +4,7 @@ from sqlalchemy.pool import StaticPool
 from ..main import app
 from ..database import get_session
 from fastapi.testclient import TestClient
+from ..utilities.authentication import verify_token
 
 @pytest.fixture(scope = "function")
 def test_session():
@@ -35,4 +36,9 @@ def client(test_session):
 
   app.dependency_overrides.clear()
 
-
+@pytest.fixture
+def authenticated_client(client):
+    fake_user = "hehe"
+    app.dependency_overrides[verify_token] = lambda: fake_user
+    yield client
+    app.dependency_overrides.clear()
