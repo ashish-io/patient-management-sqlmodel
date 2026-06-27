@@ -100,6 +100,9 @@ http://127.0.0.1:8000/docs
 - Implement role-based access control (RBAC)
 - Add pagination and filtering for API endpoints
 
+## Live API
+https://web-production-cff72.up.railway.app/docs
+
 ## Author
 
 GitHub: **@ashish-io**
