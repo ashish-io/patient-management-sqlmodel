@@ -1,9 +1,0 @@
-fastapi
-sqlmodel
-uvicorn
-python-dotenv
-PyJWT
-"pwdlib[argon2]"
-python-multipart
-pydantic
-

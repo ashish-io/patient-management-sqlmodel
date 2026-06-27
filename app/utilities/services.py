@@ -1,5 +1,5 @@
-def calculate_bmi(hieght, weight):
-  return round(weight/(hieght**2),2)
+def calculate_bmi(height, weight):
+  return round(weight/(height**2),2)
 
 
 
