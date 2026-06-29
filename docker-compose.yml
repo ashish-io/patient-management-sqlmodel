@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  
+  app:
+    build: .
+    ports:
+      - 8000:8000
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+    restart: on-failure
+  
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ashish
+      POSTGRES_PASSWORD: ashish123
+      POSTGRES_DB: hospitaldb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+volumes:
+  postgres_data:
+
+
+    
+
+
