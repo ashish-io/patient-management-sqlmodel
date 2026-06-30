@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import List
 from sqlmodel import Session, select
 from ..models.patients import PatientCreate, Patients, PatientUpdate, PatientView
-from ..utilities.services import calculate_bmi, calculate_verdict
+from ..utilities.services import calculate_bmi, calculate_verdict, verify_role
 from ..database import engine, get_session
 
 router = APIRouter(tags=["Patient"])
@@ -41,7 +41,7 @@ def get_one_patient(id: int, session: Session = Depends(get_session)):
     return patient
 
 @router.post("/create", status_code=201)
-def post_patient(patients: PatientCreate, session: Session = Depends(get_session)):
+def post_patient(patients: PatientCreate, session: Session = Depends(get_session), user = Depends(verify_role("admin"))):
   
       data = patients.model_dump()
 
@@ -76,7 +76,7 @@ def edit_patient(id: int, patient: PatientUpdate, session: Session = Depends(get
 
 
 @router.delete("/delete/{id}")
-def delete_patient(id: int, session: Session = Depends(get_session)):
+def delete_patient(id: int,user = Depends(verify_role("admin")), session: Session = Depends(get_session)):
   
     existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
@@ -86,4 +86,4 @@ def delete_patient(id: int, session: Session = Depends(get_session)):
     
     session.delete(existing_patient)
     session.commit()
-    return{"Deleted"}
+    return{"message": "Deleted"}

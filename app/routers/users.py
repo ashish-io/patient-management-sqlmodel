@@ -17,11 +17,17 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
     if  existing_user:
       raise HTTPException(status_code= 401, detail = "User alreayd exist")
     
+    if user.password == "iamadmin":
+       role = "admin"
+    else:
+       role = "user"
+       
+    
     new_user = User(
       username = user.username,
       email = user.email,
-      hashed_password = create_hashed_password(user.password)
-
+      hashed_password = create_hashed_password(user.password),
+      role = role
     )
     
     session.add(new_user)

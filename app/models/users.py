@@ -1,6 +1,11 @@
 from sqlmodel import SQLModel, Field
 from pydantic import model_validator
+from enum import Enum
 
+
+class Roles(str, Enum):
+  ADMIN = "admin"
+  USER = "user"
 
 
 class User(SQLModel, table = True):
@@ -8,6 +13,7 @@ class User(SQLModel, table = True):
   email: str
   id: int | None = Field(default = None, primary_key = True)
   hashed_password: str
+  role: Roles = Field(default="user")
 
 class UserView(SQLModel):
   username: str
