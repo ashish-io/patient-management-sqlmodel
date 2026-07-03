@@ -98,17 +98,17 @@ pytest -v
 
 ## Project Structure
 
-hospital_api/
-├── app/
-│   ├── main.py
-│   ├── database.py
-│   ├── models/
-│   ├── routers/
-│   └── utils/
-├── Dockerfile
-├── docker-compose.yml
-├── .env.example
-└── requirements.txt
+    hospital_api/
+    ├── app/
+    │   ├── main.py
+    │   ├── database.py
+    │   ├── models/
+    │   ├── routers/
+    │   └── utils/
+    ├── Dockerfile
+    ├── docker-compose.yml
+    ├── .env.example
+    └── requirements.txt
 
 
 ## Author
