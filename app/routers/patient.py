@@ -54,7 +54,7 @@ def post_patient(patients: PatientCreate, session: Session = Depends(get_session
       return patient
 
 @router.patch("/edit/{id}", response_model= PatientView)
-def edit_patient(id: int, patient: PatientUpdate, session: Session = Depends(get_session)):
+def edit_patient(id: int, patient: PatientUpdate, session: Session = Depends(get_session), user = Depends(verify_role("admin"))):
   
     existing_patient = session.exec(select(Patients).where(Patients.id == id)).first()
 
