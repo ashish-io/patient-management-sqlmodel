@@ -1,108 +1,116 @@
-# Patient Management API
+# Hospital Management API
 
-A RESTful API for managing patients, doctors, and appointments, built with FastAPI and SQLModel.
+A production-ready RESTful API for managing patients, doctors, and appointments, built with FastAPI and SQLModel.
+
+## Live API
+🚀 **https://web-production-cff72.up.railway.app/docs**
 
 ## Features
 
-- Patient CRUD operations
-- Automatic BMI calculation for patients
+- Patient CRUD with automatic BMI calculation
 - Doctor management
 - Appointment booking system
-- User registration and authentication with JWT
-- SQLite database integration
+- JWT Authentication with protected routes
+- PostgreSQL database
+- Dockerized for easy deployment
+- Automated tests with Pytest
+- CI/CD via Railway (auto deploys on git push)
 
 ## Tech Stack
 
-- FastAPI
-- SQLModel
-- SQLite
-- JWT Authentication
-- Python
+- **FastAPI** — REST API framework
+- **SQLModel** — ORM for database management
+- **PostgreSQL** — Production database
+- **JWT** — Authentication
+- **Docker** — Containerization
+- **Railway** — Cloud deployment
+- **Pytest** — Testing
 
 ## Getting Started
 
-### Clone the Repository
+### Option 1 — Run with Docker (Recommended)
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/ashish-io/patient-management-sqlmodel.git
 cd patient-management-sqlmodel
 ```
 
-### Create and Activate a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-**Windows**
-
-```bash
-venv\Scripts\activate
-```
-
-**macOS/Linux**
-
-```bash
-source venv/bin/activate
-```
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Configure Environment Variables
-
-Create a `.env` file in the project root:
+Create `.env` file:
 
 ```env
 SECRET_KEY=your-secret-key
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 ```
 
-### Run the Application
+Run:
+
+```bash
+docker-compose up
+```
+
+API available at: 
+http://localhost:8000/docs
+
+### Option 2 — Run Locally
+
+Clone and setup:
+
+```bash
+git clone https://github.com/ashish-io/patient-management-sqlmodel.git
+cd patient-management-sqlmodel
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Create `.env` file:
+
+```env
+SECRET_KEY=your-secret-key
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+```
+
+Run:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The API will be available at:
-
-```text
-http://127.0.0.1:8000
-```
-
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| POST | `/register` | Register a new user |
-| POST | `/login` | Authenticate a user |
-| GET | `/patients` | Retrieve all patients |
-| POST | `/create` | Create a new patient |
-| GET | `/doctors` | Retrieve all doctors |
-| POST | `/add_doctor` | Add a new doctor |
-| POST | `/create_appointment` | Book an appointment |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/register` | Register a new user | No |
+| POST | `/login` | Login and get JWT token | No |
+| GET | `/patients` | Get all patients | Yes |
+| POST | `/create` | Create a patient | Yes |
+| GET | `/doctors` | Get all doctors | Yes |
+| POST | `/add_doctor` | Add a doctor | Yes |
+| POST | `/create_appointment` | Book appointment | Yes |
 
-## API Documentation
+## Running Tests
 
-Once the server is running, access the interactive Swagger UI at:
-
-```text
-http://127.0.0.1:8000/docs
+```bash
+pytest -v
 ```
 
-## Future Improvements
+## Project Structure
 
-- Add automated tests
-- Migrate from SQLite to PostgreSQL
-- Add Docker support
-- Implement role-based access control (RBAC)
-- Add pagination and filtering for API endpoints
+hospital_api/
+├── app/
+│   ├── main.py
+│   ├── database.py
+│   ├── models/
+│   ├── routers/
+│   └── utils/
+├── Dockerfile
+├── docker-compose.yml
+├── .env.example
+└── requirements.txt
 
-## Live API
-https://web-production-cff72.up.railway.app/docs
 
 ## Author
 
-GitHub: **@ashish-io**
+GitHub: **[@ashish-io](https://github.com/ashish-io)**
