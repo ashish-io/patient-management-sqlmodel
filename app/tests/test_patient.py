@@ -2,12 +2,13 @@ from ..models.patients import Patients, PatientCreate
 from sqlmodel import Session
 from ..utilities.services import calculate_bmi, calculate_verdict
 
-def test_post_patient(client):
+def test_post_patient(verified_role):
 
   data = {"name":"ashish", "city":"ktm", "age": 22, "gender":"male", "height": 1.2, "weight": 50}
 
-  response = client.post("/create", json=data)
-  
+  response = verified_role.post("/create", json=data)
+
+  print(response.json())
   assert response.status_code == 201
   assert response.json()["name"] == "ashish"
   assert response.json()["id"] is not None
@@ -58,7 +59,20 @@ def test_get_patients_by_query(client, test_session: Session):
   response.status_code == 200
   response.json()[0]["name"] == "Anish"
 
-  
+
+def test_delete_patient(verified_role,test_session: Session):
+  data = {"name":"ashish", "city":"ktm", "age": 22, "gender":"male", "height": 1.2, "weight": 50}
+
+  patient1 = PatientCreate(**data)
+  patient = Patients(**patient1.model_dump())
+  test_session.add(patient)
+  test_session.commit()
+  test_session.refresh(patient)
+
+  response = verified_role.delete(f"/delete/{patient.id}")
+
+  assert response.status_code == 200
+
 
 
 

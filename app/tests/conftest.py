@@ -5,6 +5,8 @@ from ..main import app
 from ..database import get_session
 from fastapi.testclient import TestClient
 from ..utilities.authentication import verify_token
+from ..utilities.services import verify_role
+from types import SimpleNamespace
 
 @pytest.fixture(scope = "function")
 def test_session():
@@ -42,3 +44,15 @@ def authenticated_client(client):
     app.dependency_overrides[verify_token] = lambda: fake_user
     yield client
     app.dependency_overrides.clear()
+
+@pytest.fixture
+def verified_role(client):
+  user = SimpleNamespace(
+    role = "admin"
+  )
+  app.dependency_overrides[verify_token] = lambda: user
+  yield client
+  app.dependency_overrides.clear()
+
+
+  
